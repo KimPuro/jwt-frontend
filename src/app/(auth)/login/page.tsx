@@ -5,10 +5,15 @@ import { AuthLayout } from "@/components/AuthLayout";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/Fields";
 import { useState } from "react";
+import { useSnapshot } from "valtio";
+import { state } from "@/store";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const snap = useSnapshot(state);
+  const router = useRouter();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -20,6 +25,12 @@ export default function Login() {
       body: JSON.stringify({ email, password }),
     });
     const data = await response.json();
+    console.log(data);
+    if (data.status === 500) {
+      state.isLogin = true;
+      alert("로그인 성공");
+      router.push("/");
+    }
   };
   return (
     <AuthLayout
